@@ -4,9 +4,6 @@ use strict;
 use warnings;
 use utf8;
 
-use Test::More;
-use Data::Dumper;
-
 my $CARP_OUTPUT_PATTERN = qr/at (\S+) line (\d+)\.?$/;
 
 while (my $line = <STDIN>) {
@@ -68,8 +65,3 @@ sub process_carp_line {
 
     close $IN;
 }
-
-is 1, 1;
-
-
-done_testing;
