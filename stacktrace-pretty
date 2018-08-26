@@ -4,6 +4,15 @@ use strict;
 use warnings;
 use utf8;
 
+use File::Basename;
+use File::Spec;
+
+use lib File::Spec->catdir(File::Basename::dirname(__FILE__), 'lib');
+
+use StackTrace::Pretty::Printer;
+
+my $printer = StackTrace::Pretty::Printer->new();
+
 my $CARP_OUTPUT_PATTERN = qr/at (\S+) line (\d+)\.?$/;
 
 while (my $line = <STDIN>) {
@@ -37,31 +46,11 @@ sub process_carp_line {
 
     my ($filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
     $line =~ s/^\s+//;
-    print "[$depth] \e[30m\e[42m$line\e[0m\n";
+    print "[$depth]\n";
 
-    my $print_start = $target_line_num - 3;
-    if ($print_start < 1) {
-        $print_start = 1;
-    }
-    my $print_end = $target_line_num + 3;
-
-    open my $IN, '<', $filename or die $!;
-
-    my $line_num_width = length $print_end;
-    <$IN> for (1 .. $print_start - 1);
-
-    print "----------------------------------------------------\n";
-    for my $line_num ($print_start .. $print_end) {
-        my $line = <$IN>;
-        if (not $line) {
-            last;
-        }
-        chomp($line);
-
-        my $color_highlight_code = ($target_line_num == $line_num) ? "\e[31m\e[43m" : "";
-        print sprintf("\e[38;5;239m%${line_num_width}d:\e[0m $color_highlight_code%s\e[0m\n", $line_num, $line);
-    }
-    print "----------------------------------------------------\n";
-
-    close $IN;
+    $printer->print({
+        filename => $filename,
+        lineno => $target_line_num,
+        raw => $line,
+    });
 }
