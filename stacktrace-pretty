@@ -11,33 +11,66 @@ use lib File::Spec->catdir(File::Basename::dirname(__FILE__), 'lib');
 
 use StackTrace::Pretty::Printer;
 
-my $printer = StackTrace::Pretty::Printer->new();
-
 my $CARP_OUTPUT_PATTERN = qr/at (\S+) line (\d+)\.?$/;
 
-while (my $line = <STDIN>) {
-    chomp($line);
+my $printer = StackTrace::Pretty::Printer->new();
 
-    unless ($line =~ $CARP_OUTPUT_PATTERN) {
-        print "$line\n";
-        next;
-    } 
+main();
+exit(0);
 
-    process_carp_line(0, $line);
+sub main {
+    my $filename = $ARGV[0];
+    warn "Filename: $filename\n";
 
-    print "\n";
-    my $depth = 1;
-    while (my $_line = <STDIN>) {
-        chomp($_line);
+    if ($filename) {
+        from_file($filename);
+    }
+    else {
+        from_stdin();
+    }
+}
 
-        unless ($_line =~ /^\s/) {
-            print "$_line\n";
-            last;
+sub from_file {
+    my ($filename) = @_;
+
+    open my $IN, '<', $filename or die "Failed to open file $filename : $!";
+    process_input($IN);
+    close $IN;
+}
+
+sub from_stdin {
+    my $IN = *STDIN;
+
+    process_input($IN);
+}
+
+sub process_input {
+    my ($IN) = @_;
+
+    while (my $line = <$IN>) {
+        chomp($line);
+
+        unless ($line =~ $CARP_OUTPUT_PATTERN) {
+            print "$line\n";
+            next;
         }
 
-        process_carp_line($depth, $_line);
+        process_carp_line(0, $line);
+
         print "\n";
-        $depth++;
+        my $depth = 1;
+        while (my $_line = <$IN>) {
+            chomp($_line);
+
+            unless ($_line =~ /^\s/) {
+                print "$_line\n";
+                last;
+            }
+
+            process_carp_line($depth, $_line);
+            print "\n";
+            $depth++;
+        }
     }
 }
 
