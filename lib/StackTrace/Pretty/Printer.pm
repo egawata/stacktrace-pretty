@@ -3,6 +3,12 @@ use strict;
 use warnings;
 use utf8;
 
+our $COLOR_RAW_LINE = "\e[30m\e[42m";
+our $COLOR_LINENUM = "\e[38;5;239m";
+our $COLOR_CURRENT_LINE = "\e[31m\e[43m";
+our $COLOR_RESET = "\e[0m";
+
+
 sub new {
     my ($class, @args) = @_;
     my $args = (ref $args[0] eq 'HASH') ? $args[0] : { @args };
@@ -31,7 +37,7 @@ sub print {
 
     <$IN> for (1 .. $print_start - 1);
 
-    print "\e[30m\e[42m$raw\e[0m\n";
+    print "${COLOR_RAW_LINE}${raw}${COLOR_RESET}\n";
     print "----------------------------------------------------\n";
     for my $current_line_no ($print_start .. $print_end) {
         my $line = <$IN>;
@@ -40,8 +46,14 @@ sub print {
         }
         chomp($line);
 
-        my $color_highlight_code = ($lineno == $current_line_no) ? "\e[31m\e[43m" : "";
-        print sprintf("\e[38;5;239m%${line_num_area_width}d:\e[0m $color_highlight_code%s\e[0m\n", $current_line_no, $line);
+        my $color_highlight_code = ($lineno == $current_line_no) ? $COLOR_CURRENT_LINE : "";
+        print sprintf(
+            "${COLOR_LINENUM}%${line_num_area_width}d:${COLOR_RESET} "
+            . "${color_highlight_code}%s${COLOR_RESET}"
+            . "\n",
+            $current_line_no,
+            $line
+        );
     }
     print "----------------------------------------------------\n";
 
