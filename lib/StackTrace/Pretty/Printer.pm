@@ -18,7 +18,7 @@ sub print {
     my $lineno = $args->{lineno} or die "'lineno' required";
     my $raw = $args->{raw} or die "'raw' required";
 
-    my $num_lines_context = $args->{num_lines_context} // 3;
+    my $num_lines_context = $args->{num_lines_context} // 2;
 
     my $print_start = $lineno - $num_lines_context;
     if ($print_start < 1) {
