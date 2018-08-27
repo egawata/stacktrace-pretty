@@ -7,7 +7,7 @@ use utf8;
 use File::Basename;
 use File::Spec;
 
-use lib File::Spec->catdir(File::Basename::dirname(__FILE__), 'lib');
+use lib File::Spec->catdir(File::Basename::dirname(-l __FILE__ ? readlink(__FILE__) : __FILE__), 'lib');
 
 use StackTrace::Pretty::Printer;
 
