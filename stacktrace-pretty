@@ -11,9 +11,11 @@ use lib File::Spec->catdir(File::Basename::dirname(__FILE__), 'lib');
 
 use StackTrace::Pretty::Printer;
 
-my $CARP_OUTPUT_PATTERN = qr/at (\S+) line (\d+)\.?$/;
+my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
 
-my $printer = StackTrace::Pretty::Printer->new();
+my $printer = StackTrace::Pretty::Printer->new(
+    excluded_modules => ['bbb'],
+);
 
 main();
 exit(0);
@@ -76,11 +78,12 @@ sub process_input {
 sub process_carp_line {
     my ($depth, $line) = @_;
 
-    my ($filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
+    my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
     $line =~ s/^\s+//;
     print "[$depth]\n";
 
     $printer->print({
+        dest_func => $dest_func,
         filename => $filename,
         lineno => $target_line_num,
         raw => $line,
