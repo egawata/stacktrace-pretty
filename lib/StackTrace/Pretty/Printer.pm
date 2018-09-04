@@ -97,7 +97,7 @@ sub _print_start_stack_trace {
 
     print $COLOR_STACK_TRACE_START;
     print "-------------------------------------------------------------------------\n";
-    print " Stack trace start at $args->{lineno} of $args->{filename}\n";
+    print " Stack trace start at line $args->{lineno} of $args->{filename}\n";
     print "-------------------------------------------------------------------------\n";
     print $COLOR_RESET;
 }
