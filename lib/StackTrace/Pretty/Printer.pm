@@ -3,11 +3,12 @@ use strict;
 use warnings;
 use utf8;
 
-our $COLOR_RAW_LINE = "\e[38;5;193m\e[48;5;130m";
+our $COLOR_RAW_LINE = "\e[38;5;10m";
 our $COLOR_LINENUM = "\e[38;5;239m";
 our $COLOR_NORMAL_LINE = "\e[38;5;242m";
 our $COLOR_CURRENT_LINE = "\e[38;5;230m\e[48;5;234m";
 our $COLOR_RESET = "\e[0m";
+our $COLOR_STACK_TRACE_START = "\e[38;5;11m";
 
 
 sub new {
@@ -25,6 +26,11 @@ sub print {
     my $filename = $args->{filename} or die "'filename' required";
     my $lineno = $args->{lineno} or die "'lineno' required";
     my $raw = $args->{raw} or die "'raw' required";
+    my $depth = $args->{depth};
+
+    if (defined $depth and $depth == 0) {
+        $self->_print_start_stack_trace($args);
+    }
 
     my $num_lines_context = $args->{num_lines_context} // 2;
 
@@ -81,6 +87,16 @@ sub _excluded_destination {
     }
 
     return 0;
+}
+
+sub _print_start_stack_trace {
+    my ($self, $args) = @_;
+
+    print $COLOR_STACK_TRACE_START;
+    print "-------------------------------------------------------------------------\n";
+    print " Stack trace start at $args->{lineno} of $args->{filename}\n";
+    print "-------------------------------------------------------------------------\n";
+    print $COLOR_RESET;
 }
 
 
