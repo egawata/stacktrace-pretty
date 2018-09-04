@@ -3,7 +3,10 @@ use strict;
 use warnings;
 use utf8;
 
-our $COLOR_RAW_LINE = "\e[38;5;10m";
+our $COLOR_RAW_LINE = "\e[38;5;252m";
+our $COLOR_RAW_LINE_DEST_NAME = "\e[38;5;10m";
+our $COLOR_RAW_LINE_DEST_ARGS = "\e[38;5;69m";
+our $COLOR_RAW_LINE_FILENAME = "\e[38;5;208m";
 our $COLOR_LINENUM = "\e[38;5;239m";
 our $COLOR_NORMAL_LINE = "\e[38;5;242m";
 our $COLOR_CURRENT_LINE = "\e[38;5;230m\e[48;5;234m";
@@ -44,7 +47,12 @@ sub print {
     if (defined $depth) {
         print "[$depth] ";
     }
-    print "${COLOR_RAW_LINE}${raw}${COLOR_RESET}\n";
+    my $string_printed_raw = $raw;
+    $string_printed_raw
+        =~ s/called at (\S+) line (\d+)$/${COLOR_RAW_LINE}called at${COLOR_RAW_LINE} ${COLOR_RAW_LINE_FILENAME}${1}${COLOR_RAW_LINE} line ${COLOR_RAW_LINE_FILENAME}${2}${COLOR_RAW_LINE}/;
+    $string_printed_raw
+        =~ s/^([^\(]+)/${COLOR_RAW_LINE_DEST_NAME}${1}${COLOR_RAW_LINE_DEST_ARGS}/;
+    print "${COLOR_RAW_LINE}${string_printed_raw}${COLOR_RESET}\n";
 
     return if $self->_excluded_destination($dest_func);
 
