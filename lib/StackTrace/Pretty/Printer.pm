@@ -21,6 +21,7 @@ sub print {
     my ($self, @args) = @_;
     my $args = (ref $args[0] eq 'HASH') ? $args[0] : { @args };
 
+    my $dest_func = $args->{dest_func} // '';
     my $filename = $args->{filename} or die "'filename' required";
     my $lineno = $args->{lineno} or die "'lineno' required";
     my $raw = $args->{raw} or die "'raw' required";
@@ -34,6 +35,10 @@ sub print {
     my $print_end = $lineno + $num_lines_context;
     my $line_num_area_width = length $print_end;
 
+    print "${COLOR_RAW_LINE}${raw}${COLOR_RESET}\n";
+
+    return if $self->_excluded_destination($dest_func);
+
     my $open_success = open my $IN, '<', $filename;
     if (not $open_success) {
         print "No such file $filename\n";
@@ -42,7 +47,6 @@ sub print {
 
     <$IN> for (1 .. $print_start - 1);
 
-    print "${COLOR_RAW_LINE}${raw}${COLOR_RESET}\n";
     print "----------------------------------------------------\n";
     for my $current_line_no ($print_start .. $print_end) {
         my $line = <$IN>;
@@ -63,6 +67,20 @@ sub print {
     print "----------------------------------------------------\n";
 
     close $IN;
+}
+
+sub _excluded_destination {
+    my ($self, $dest_func) = @_;
+
+    return unless $self->{excluded_modules};
+
+    for my $module_name (@{ $self->{excluded_modules} }) {
+        if ($dest_func =~ /$module_name/) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 
