@@ -4,10 +4,18 @@ use strict;
 use warnings;
 use utf8;
 
+my $file_myself;
+BEGIN {
+    $file_myself = __FILE__;
+    if (-l $file_myself) {
+        $file_myself = readlink $file_myself;
+    }
+}
+
 use File::Basename;
 use File::Spec;
 
-use lib File::Spec->catdir(File::Basename::dirname(__FILE__), 'lib');
+use lib File::Spec->catdir(File::Basename::dirname($file_myself), 'lib');
 
 use StackTrace::Pretty::Printer;
 
