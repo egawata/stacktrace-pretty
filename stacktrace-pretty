@@ -13,9 +13,15 @@ use StackTrace::Pretty::Printer;
 
 my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
 
-my $printer = StackTrace::Pretty::Printer->new(
-    excluded_modules => ['bbb'],
-);
+my %printer_params = ();
+
+my $excluded_modules_str = $ENV{STACKTRACE_PRETTY_EXCLUDED_MODULES};
+if ($excluded_modules_str) {
+    my @excluded_modules = split /,/, $excluded_modules_str;
+    $printer_params{excluded_modules} = \@excluded_modules;
+}
+
+my $printer = StackTrace::Pretty::Printer->new(\%printer_params);
 
 main();
 exit(0);
