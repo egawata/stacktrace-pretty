@@ -34,7 +34,11 @@ sub print {
     my $print_end = $lineno + $num_lines_context;
     my $line_num_area_width = length $print_end;
 
-    open my $IN, '<', $filename or die $!;
+    my $open_success = open my $IN, '<', $filename;
+    if (not $open_success) {
+        print "No such file $filename\n";
+        return;
+    };
 
     <$IN> for (1 .. $print_start - 1);
 
