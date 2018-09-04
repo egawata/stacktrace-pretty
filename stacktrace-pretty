@@ -58,7 +58,6 @@ sub process_input {
 
         process_carp_line(0, $line);
 
-        print "\n";
         my $depth = 1;
         while (my $_line = <$IN>) {
             chomp($_line);
@@ -69,7 +68,6 @@ sub process_input {
             }
 
             process_carp_line($depth, $_line);
-            print "\n";
             $depth++;
         }
     }
