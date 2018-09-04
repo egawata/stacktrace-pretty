@@ -41,6 +41,9 @@ sub print {
     my $print_end = $lineno + $num_lines_context;
     my $line_num_area_width = length $print_end;
 
+    if (defined $depth) {
+        print "[$depth] ";
+    }
     print "${COLOR_RAW_LINE}${raw}${COLOR_RESET}\n";
 
     return if $self->_excluded_destination($dest_func);

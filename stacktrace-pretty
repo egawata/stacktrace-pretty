@@ -80,12 +80,12 @@ sub process_carp_line {
 
     my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
     $line =~ s/^\s+//;
-    print "[$depth]\n";
 
     $printer->print({
         dest_func => $dest_func,
         filename => $filename,
         lineno => $target_line_num,
         raw => $line,
+        depth => $depth,
     });
 }
