@@ -3,9 +3,10 @@ use strict;
 use warnings;
 use utf8;
 
-our $COLOR_RAW_LINE = "\e[30m\e[42m";
+our $COLOR_RAW_LINE = "\e[38;5;193m\e[48;5;130m";
 our $COLOR_LINENUM = "\e[38;5;239m";
-our $COLOR_CURRENT_LINE = "\e[31m\e[43m";
+our $COLOR_NORMAL_LINE = "\e[38;5;242m";
+our $COLOR_CURRENT_LINE = "\e[38;5;230m\e[48;5;234m";
 our $COLOR_RESET = "\e[0m";
 
 
@@ -46,7 +47,7 @@ sub print {
         }
         chomp($line);
 
-        my $color_highlight_code = ($lineno == $current_line_no) ? $COLOR_CURRENT_LINE : "";
+        my $color_highlight_code = ($lineno == $current_line_no) ? $COLOR_CURRENT_LINE : $COLOR_NORMAL_LINE;
         print sprintf(
             "${COLOR_LINENUM}%${line_num_area_width}d:${COLOR_RESET} "
             . "${color_highlight_code}%s${COLOR_RESET}"
