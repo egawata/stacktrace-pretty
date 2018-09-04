@@ -28,7 +28,7 @@ This tool converts text which includes stack trace of perl into more readable on
 $ git clone https://github.com/egawata/stacktrace-pretty.git
 ~~~
 
-Add a symlink under `$PATH` if you want.
+Add a symlink to a `stacktrace-pretty` executable under `$PATH` if you want.
 
 # Options
 
