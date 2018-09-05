@@ -11,9 +11,17 @@ use lib File::Spec->catdir(File::Basename::dirname(-l __FILE__ ? readlink(__FILE
 
 use StackTrace::Pretty::Printer;
 
-my $CARP_OUTPUT_PATTERN = qr/at (\S+) line (\d+)\.?$/;
+my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
 
-my $printer = StackTrace::Pretty::Printer->new();
+my %printer_params = ();
+
+my $excluded_modules_str = $ENV{STACKTRACE_PRETTY_EXCLUDED_MODULES};
+if ($excluded_modules_str) {
+    my @excluded_modules = split /,/, $excluded_modules_str;
+    $printer_params{excluded_modules} = \@excluded_modules;
+}
+
+my $printer = StackTrace::Pretty::Printer->new(\%printer_params);
 
 main();
 exit(0);
@@ -46,8 +54,10 @@ sub from_stdin {
 sub process_input {
     my ($IN) = @_;
 
-    while (my $line = <$IN>) {
+    my $previous_line;
+    while (my $line = $previous_line // <$IN>) {
         chomp($line);
+        undef $previous_line;
 
         unless ($line =~ $CARP_OUTPUT_PATTERN) {
             print "$line\n";
@@ -56,18 +66,17 @@ sub process_input {
 
         process_carp_line(0, $line);
 
-        print "\n";
         my $depth = 1;
         while (my $_line = <$IN>) {
             chomp($_line);
 
             unless ($_line =~ /^\s/) {
-                print "$_line\n";
+                $previous_line = $_line;
+                print "\n";
                 last;
             }
 
             process_carp_line($depth, $_line);
-            print "\n";
             $depth++;
         }
     }
@@ -76,13 +85,14 @@ sub process_input {
 sub process_carp_line {
     my ($depth, $line) = @_;
 
-    my ($filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
+    my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
     $line =~ s/^\s+//;
-    print "[$depth]\n";
 
     $printer->print({
+        dest_func => $dest_func,
         filename => $filename,
         lineno => $target_line_num,
         raw => $line,
+        depth => $depth,
     });
 }
