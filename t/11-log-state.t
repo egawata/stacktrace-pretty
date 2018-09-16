@@ -87,4 +87,21 @@ subtest 'Child stack trace' => sub {
     };
 };
 
+subtest 'line_num' => sub {
+    my $ls = StackTrace::Pretty::LogState->new();
+
+    $ls->read('Normal Line');
+
+    $ls->read($FIRST_LINE_STACK_TRACE);
+    is $ls->line_num, 0, 'line_num is 0 at first line of stack trace';
+
+    for (1..3) {
+        $ls->read($CHILD_LINE_STACK_TRACE);
+    }
+    is $ls->line_num, 3, 'line_num increases';
+
+    $ls->read($FIRST_LINE_STACK_TRACE);
+    is $ls->line_num, 0, 'line_num is reset';
+};
+
 done_testing;

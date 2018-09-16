@@ -12,6 +12,7 @@ sub new {
     return bless {
         _is_in_stack_trace => 0,
         _has_done_prev_stack_trace => 0,
+        _line_num => 0,
     }, $class;
 }
 
@@ -21,10 +22,12 @@ sub read {
     if ($line =~ $FIRST_LINE_ST_PATTERN) {
         $self->{_has_done_prev_stack_trace} = ($self->{_is_in_stack_trace}) ? 1 : 0;
         $self->{_is_in_stack_trace} = 1;
+        $self->{_line_num} = 0; # Reset
     }
     elsif ($line =~ $CHILD_LINE_ST_PATTERN) {
         if ($self->{_is_in_stack_trace}) {
             $self->{_is_in_stack_trace} = 1;    #  Unchanged
+            $self->{_line_num}++;
         }
         else {  # Abnormal case
             $self->{_is_in_stack_trace} = 0;
@@ -34,6 +37,7 @@ sub read {
     else {  # Normal line
         $self->{_has_done_prev_stack_trace} = ($self->{_is_in_stack_trace}) ? 1 : 0;
         $self->{_is_in_stack_trace} = 0;
+        $self->{_line_num} = 0;
     }
 
 }
@@ -48,6 +52,12 @@ sub has_done_prev_stack_trace {
     my ($self) = @_;
 
     return $self->{_has_done_prev_stack_trace};
+}
+
+sub line_num {
+    my ($self) = @_;
+
+    return $self->{_line_num};
 }
 
 1;
