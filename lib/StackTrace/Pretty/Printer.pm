@@ -119,12 +119,13 @@ sub _print_start_stack_trace {
 sub _extract_func_and_line_num {
     my ($self, $line) = @_;
 
-    my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
-    my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
+    my ($dest_func, $filename, $target_line_num);
 
-    # If first line of stack trace, there's no destination func
-    if ($line =~ /^\S/) {
-        undef $dest_func;
+    if ($line =~ /^\S/) {  # first line
+        ($filename, $target_line_num) = $line =~ /^.*? at (\S+) line (\d+)\.$/;
+    }
+    else {
+        ($dest_func, $filename, $target_line_num) = $line =~ /^\s+(.*?) called at (\S+) line (\d+)$/;
     }
 
     return {
