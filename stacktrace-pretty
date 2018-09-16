@@ -96,3 +96,40 @@ sub process_carp_line {
         depth => $depth,
     });
 }
+
+__END__
+
+=head1 NAME
+
+stacktrace-pretty - Convert stacktrace to more readable one
+
+=head1 SYNOPSIS
+
+    stacktrace-pretty sample.log
+    perl sample.pl 2>&1 | stacktrace-pretty
+
+=head1 DESCRIPTION
+
+This tool converts text which includes stack trace of perl into more readable one.
+
+=head2 INSTALL
+
+    cpanm https://github.com/egawata/stacktrace-pretty.git
+
+=head1 OPTIONS
+
+Use C<STACKTRACE_PRETTY_EXCLUDED_MODULES> environment variable. It is a part of module/function names. You can specify more than one names by separating comma C<,>.
+
+    export STACKTRACE_PRETTY_EXCLUDED_MODULES=Some::Module,Another::Module
+
+=head1 AUTHOR
+
+egawata (L<https://github.com/egawata>)
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c)2018 egawata All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself. See perlartistic.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
