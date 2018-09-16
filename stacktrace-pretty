@@ -10,6 +10,7 @@ use File::Spec;
 use lib File::Spec->catdir(File::Basename::dirname(-l __FILE__ ? readlink(__FILE__) : __FILE__), 'lib');
 
 use StackTrace::Pretty::Printer;
+use StackTrace::Pretty::LogState;
 
 my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
 
