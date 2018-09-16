@@ -62,28 +62,15 @@ sub process_input {
 
         $log_state->read($line);
         if ($log_state->is_in_stack_trace) {
-            process_carp_line($log_state->line_num, $line);
+            $printer->print({
+                line => $line,
+                depth => $log_state->line_num,
+            });
         }
         else {
             print "$line\n";
         }
     }
-}
-
-sub process_carp_line {
-    my ($depth, $line) = @_;
-
-    my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
-    $line =~ s/^\s+//;
-
-    $printer->print({
-        dest_func => $dest_func,
-        filename => $filename,
-        lineno => $target_line_num,
-        raw => $line,
-        line => $line,
-        depth => $depth,
-    });
 }
 
 __END__
