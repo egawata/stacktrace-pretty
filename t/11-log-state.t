@@ -62,7 +62,7 @@ subtest 'Child stack trace' => sub {
 
         # If previous line is not in stack trace,
         # this line shouldn't be considered as child line of stack trace.
-        is $ls->is_in_stack_trace, 0, 'is_in_stack_trace';
+        is $ls->is_in_stack_trace, 1, 'is_in_stack_trace';
     };
 
     subtest 'Previous is in another stack trace' => sub {
