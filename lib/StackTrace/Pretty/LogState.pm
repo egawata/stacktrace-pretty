@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use utf8;
 
-my $FIRST_LINE_ST_PATTERN = qr/^\S+ at \S+ line \d+\.$/;
-my $CHILD_LINE_ST_PATTERN = qr/^\s+\S+ called at \S+ line \d+$/;
+my $FIRST_LINE_ST_PATTERN = qr/ at \S+ line \d+\.$/;
+my $CHILD_LINE_ST_PATTERN = qr/ at \S+ line \d+\.?$/;
 
 sub new {
     my ($class) = @_;
