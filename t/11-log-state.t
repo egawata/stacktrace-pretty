@@ -1,12 +1,10 @@
 use strict;
 use warnings;
 use utf8;
-use lib qw(lib);
+use lib qw(lib .);
 
 use Test::More;
-
-my $FIRST_LINE_STACK_TRACE = 'Message at Some::Module::function line 100.';
-my $CHILD_LINE_STACK_TRACE = '    Some::Module::dest called at Another::Module::src line 200';
+use t::Util;
 
 BEGIN {
     use_ok 'StackTrace::Pretty::LogState';
@@ -38,7 +36,7 @@ subtest 'Start a stack trace' => sub {
 
         $ls->{_is_in_stack_trace} = 0;
 
-        $ls->read($FIRST_LINE_STACK_TRACE);
+        $ls->read(first_line_st());
         is $ls->is_in_stack_trace, 1, 'is_in_stack_trace';
     };
 
@@ -47,7 +45,7 @@ subtest 'Start a stack trace' => sub {
 
         $ls->{_is_in_stack_trace} = 1;
 
-        $ls->read($FIRST_LINE_STACK_TRACE);
+        $ls->read(first_line_st());
         is $ls->is_in_stack_trace, 1, 'is_in_stack_trace';
     };
 };
@@ -58,7 +56,7 @@ subtest 'Child stack trace' => sub {
 
         $ls->{_is_in_stack_trace} = 0;
 
-        $ls->read($CHILD_LINE_STACK_TRACE);
+        $ls->read(child_line_st());
 
         # If previous line is not in stack trace,
         # this line shouldn't be considered as child line of stack trace.
@@ -70,7 +68,7 @@ subtest 'Child stack trace' => sub {
 
         $ls->{_is_in_stack_trace} = 1;
 
-        $ls->read($CHILD_LINE_STACK_TRACE);
+        $ls->read(child_line_st());
         is $ls->is_in_stack_trace, 1, 'is_in_stack_trace';
     };
 };
@@ -80,15 +78,15 @@ subtest 'line_num' => sub {
 
     $ls->read('Normal Line');
 
-    $ls->read($FIRST_LINE_STACK_TRACE);
+    $ls->read(first_line_st());
     is $ls->line_num, 0, 'line_num is 0 at first line of stack trace';
 
     for (1..3) {
-        $ls->read($CHILD_LINE_STACK_TRACE);
+        $ls->read(child_line_st());
     }
     is $ls->line_num, 3, 'line_num increases';
 
-    $ls->read($FIRST_LINE_STACK_TRACE);
+    $ls->read(first_line_st());
     is $ls->line_num, 0, 'line_num is reset';
 };
 
