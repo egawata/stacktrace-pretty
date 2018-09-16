@@ -32,13 +32,9 @@ sub print {
     my $dest_func = $extracted_from_line->{dest_func} // '';
     my $filename = $extracted_from_line->{filename};
     my $lineno = $extracted_from_line->{lineno};
-    unless ($filename && $lineno) {
-        print "$args->{line}\n";    #  Normal output
-        return;
-    }
 
     if (defined $depth and $depth == 0) {
-        $self->_print_start_stack_trace($args);
+        $self->_print_start_stack_trace($filename, $lineno);
     }
 
     my $num_lines_context = $args->{num_lines_context} // 2;
@@ -107,11 +103,11 @@ sub _excluded_destination {
 }
 
 sub _print_start_stack_trace {
-    my ($self, $args) = @_;
+    my ($self, $filename, $lineno) = @_;
 
     print $COLOR_STACK_TRACE_START;
     print "-------------------------------------------------------------------------\n";
-    print " Stack trace start at line $args->{lineno} of $args->{filename}\n";
+    print " Stack trace start at line $lineno of $filename\n";
     print "-------------------------------------------------------------------------\n";
     print $COLOR_RESET;
 }
