@@ -81,6 +81,7 @@ sub process_carp_line {
         filename => $filename,
         lineno => $target_line_num,
         raw => $line,
+        line => $line,
         depth => $depth,
     });
 }

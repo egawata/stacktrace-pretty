@@ -25,11 +25,13 @@ sub print {
     my ($self, @args) = @_;
     my $args = (ref $args[0] eq 'HASH') ? $args[0] : { @args };
 
-    my $dest_func = $args->{dest_func} // '';
-    my $filename = $args->{filename} or die "'filename' required";
-    my $lineno = $args->{lineno} or die "'lineno' required";
-    my $raw = $args->{raw} or die "'raw' required";
     my $depth = $args->{depth};
+
+    defined $args->{line} or die "'line' required";
+    my $extracted_from_line = $self->_extract_func_and_line_num($args->{line});
+    my $dest_func = $extracted_from_line->{dest_func} // '';
+    my $filename = $extracted_from_line->{filename};
+    my $lineno = $extracted_from_line->{lineno};
 
     if (defined $depth and $depth == 0) {
         $self->_print_start_stack_trace($args);
@@ -47,7 +49,7 @@ sub print {
     if (defined $depth) {
         print "[$depth] ";
     }
-    my $string_printed_raw = $raw;
+    my $string_printed_raw = $args->{line};
     $string_printed_raw
         =~ s/called at (\S+) line (\d+)$/${COLOR_RAW_LINE}called at${COLOR_RAW_LINE} ${COLOR_RAW_LINE_FILENAME}${1}${COLOR_RAW_LINE} line ${COLOR_RAW_LINE_FILENAME}${2}${COLOR_RAW_LINE}/;
     $string_printed_raw
