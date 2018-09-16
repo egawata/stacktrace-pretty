@@ -65,7 +65,7 @@ sub process_input {
             process_carp_line($log_state->line_num, $line);
         }
         else {
-            print $line;
+            print "$line\n";
         }
     }
 }
