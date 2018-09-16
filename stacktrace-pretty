@@ -60,12 +60,12 @@ sub process_input {
         chomp($line);
 
         $log_state->read($line);
-        if (not $log_state->is_in_stack_trace) {
-            print $line;
-            next;
+        if ($log_state->is_in_stack_trace) {
+            process_carp_line($log_state->line_num, $line);
         }
-
-        process_carp_line($log_state->line_num, $line);
+        else {
+            print $line;
+        }
     }
 }
 
