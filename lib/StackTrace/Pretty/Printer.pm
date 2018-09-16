@@ -110,5 +110,23 @@ sub _print_start_stack_trace {
     print $COLOR_RESET;
 }
 
+sub _extract_func_and_line_num {
+    my ($self, $line) = @_;
+
+    my $CARP_OUTPUT_PATTERN = qr/(\S+)(?: called)? at (\S+) line (\d+)\.?$/;
+    my ($dest_func, $filename, $target_line_num) = $line =~ $CARP_OUTPUT_PATTERN;
+
+    # If first line of stack trace, there's no destination func
+    if ($line =~ /^\S/) {
+        undef $dest_func;
+    }
+
+    return {
+        dest_func => $dest_func,
+        filename => $filename,
+        lineno => $target_line_num,
+    };
+}
+
 
 1;
