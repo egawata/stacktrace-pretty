@@ -2,9 +2,10 @@
 use 5.006;
 use strict;
 use warnings;
-use Test::More;
 
-plan tests => 1;
+use lib qw(lib);
+
+use Test::More tests => 1;
 
 BEGIN {
     use_ok( 'StackTrace::Pretty' ) || print "Bail out!\n";

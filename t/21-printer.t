@@ -25,7 +25,7 @@ subtest '_extract_func_and_line_num' => sub {
     subtest 'child line' => sub {
         my $line = child_line_st();
         my $ret = StackTrace::Pretty::Printer->_extract_func_and_line_num($line);
-        like $ret->{dest_func}, qr/^Some::Module::some_func\(Some::Module=HASH\(0x[0-9a-f]+\), "Test Arg", HASH\(0x[0-9a-f]+\)\)$/;
+        like $ret->{dest_func}, qr/^Some::Module::some_func\('?Some::Module=HASH\(0x[0-9a-f]+\)'?, ['"]Test Arg['"], '?HASH\(0x[0-9a-f]+\)'?\)$/;
         is $ret->{filename}, 't/Util.pm';
         is $ret->{lineno}, child_line_lineno();
     };
