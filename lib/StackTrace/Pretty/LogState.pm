@@ -23,8 +23,11 @@ sub read {
         $self->{_line_num} = 0; # Reset
     }
     elsif ($line =~ $CHILD_LINE_ST_PATTERN) {
-        $self->{_is_in_stack_trace} = 1;    #  Unchanged
-        $self->{_line_num}++;
+        #  If first line is a child line, line_num should be 0.
+        if ($self->{_is_in_stack_trace}) {
+            $self->{_line_num}++;
+        }
+        $self->{_is_in_stack_trace} = 1;
     }
     else {  # Normal line
         $self->{_is_in_stack_trace} = 0;
