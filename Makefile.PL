@@ -1,13 +1,26 @@
-use 5.008001;
+use 5.006;
+use strict;
+use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME    => 'StackTrace::Pretty',
-    VERSION_FROM => 'lib/StackTrace/Pretty.pm',
-    EXE_FILES => [
-        'stacktrace-pretty',
-    ],
-    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-        (ABSTRACT_FROM  => 'lib/StackTrace/Pretty.pm',
-         AUTHOR         => 'egawata') : ()),
+    NAME             => 'StackTrace::Pretty',
+    AUTHOR           => q{egawata <egawa.takashi@gmail.com>},
+    VERSION_FROM     => 'lib/StackTrace/Pretty.pm',
+    ABSTRACT_FROM    => 'lib/StackTrace/Pretty.pm',
+    LICENSE          => 'artistic_2',
+    PL_FILES         => {},
+    MIN_PERL_VERSION => '5.006',
+    CONFIGURE_REQUIRES => {
+        'ExtUtils::MakeMaker' => '0',
+    },
+    BUILD_REQUIRES => {
+        'Test::More' => '0.96',
+    },
+    PREREQ_PM => {
+        #'ABC'              => '1.6',
+        #'Foo::Bar::Module' => '5.0401',
+    },
+    dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean => { FILES => 'StackTrace-Pretty-*' },
 );
