@@ -29,7 +29,7 @@ sub print {
 
     defined $args->{line} or die "'line' required";
     my $extracted_from_line = $self->_extract_func_and_line_num($args->{line});
-    my $dest_func = $extracted_from_line->{dest_func} // '';
+    my $dest_func = $extracted_from_line->{dest_func} || '';
     my $filename = $extracted_from_line->{filename};
     my $lineno = $extracted_from_line->{lineno};
 
@@ -37,7 +37,7 @@ sub print {
         $self->_print_start_stack_trace($filename, $lineno);
     }
 
-    my $num_lines_context = $args->{num_lines_context} // 2;
+    my $num_lines_context = $args->{num_lines_context} || 2;
 
     my $print_start = $lineno - $num_lines_context;
     if ($print_start < 1) {
@@ -118,7 +118,7 @@ sub _extract_func_and_line_num {
     my ($dest_func, $filename, $target_line_num);
 
     if ($line =~ /^\S/) {  # first line
-        ($filename, $target_line_num) = $line =~ /^.*? at (\S+) line (\d+)\.$/;
+        ($filename, $target_line_num) = $line =~ /^.*? at (\S+) line (\d+)\.?$/;
     }
     else {
         ($dest_func, $filename, $target_line_num) = $line =~ /^\s+(.*?) called at (\S+) line (\d+)$/;
